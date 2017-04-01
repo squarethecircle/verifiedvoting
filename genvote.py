@@ -17,13 +17,14 @@ g = order.random() * h
 def commit(a, r):
 	return a * h + r * g
 
+
 def genRealCommitments(vote, k, R):
 	real_commitment = commit(vote, R)
 	rb = [order.random() for i in range(k)]
 	masks = [commit(vote, R + rb[i]) for i in range(k)]
 	return real_commitment, masks, rb
 
-def genFakeCommitments(dummy_challenges, k, real_vote):
+def genFakeCommitments(dummy_challenges, k, real_vote, R):
 	randoms = {}
 	commitments = defaultdict(list)
 	for vote, challenge_str in dummy_challenges.items():
@@ -32,9 +33,9 @@ def genFakeCommitments(dummy_challenges, k, real_vote):
 		challenge_num = int(challenge, 16)
 		for i in range(k):
 			if (challenge_num & 1) == 1:
-				commitments[vote].append(commit(real_vote, randoms[vote][i]))
+				commitments[vote].append(commit(real_vote, R + randoms[vote][i]))
 			else:
-				commitments[vote].append(commit(vote, randoms[vote][i]))
+				commitments[vote].append(commit(vote, R + randoms[vote][i]))
 			challenge_num >>= 1
 	return commitments, randoms
 
@@ -97,7 +98,7 @@ def castVote(voter_id, candidate):
 	for non_vote in filter(lambda l: l != candidate, candidates):
 		DC[non_vote] = ' '.join([getRandomWord() for i in range(4)])
 	rc, masks, rb = genRealCommitments(candidate, K, R)
-	commitments, randoms = genFakeCommitments(DC, K, candidate)
+	commitments, randoms = genFakeCommitments(DC, K, candidate, R)
 	randoms[candidate] = rb
 	commitments[candidate] = masks
 	everything = challengeHash(''.join(map(str,[rc] + list(chain(commitments.values())))), K) #alphabetize this
@@ -110,6 +111,22 @@ def castVote(voter_id, candidate):
 	receipt = serializeEcPts({'voter_id': voter_id, 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
 	return (candidate, rc, R, everything, str(x), answers, receipt)
 
+def verifyChallenge(cd, vote_commitment):
+	vc = strToEcPt(vote_commitment, G)
+	for candidate in cd:
+		answers = list(map(Bn.from_decimal,cd[candidate]['answer']))
+		proofs = list(map(lambda l: strToEcPt(l, G), cd[candidate]['proof']))
+		challenge_bits = int(challengeHash(cd[candidate]['challenge'], K), 16)
+		for i in range(K):
+			if (challenge_bits & 1) == 0:
+				assert(proofs[i] == commit(candidate, answers[i]))
+			else:
+				assert(proofs[i] == vc + answers[i] * g)
+			challenge_bits >>= 1
+
+
+
+
 def verifyCommitment(x, vote, commitments, rx):
 	everything = challengeHash(''.join(map(str,[vote] + list(chain(commitments.values())))), K) #alphabetize this
 	result = commit(Bn.from_hex(everything), rx)
@@ -121,7 +138,6 @@ def permuteAndMask(votes, vote_commitments):
 	maskers = [order.random() for i in range(len(votes))]
 	pm_vote_commitments = [vote_commitments[pi[i]] +  maskers[pi[i]] * g for i in range(len(votes))]
 	return pm_vote_commitments, maskers, pi
-
 
 def openMaskedCommitments(votes, maskers, r, pi):
 	return [(votes[pi[i]], str(r[pi[i]] + maskers[pi[i]])) for i in range(len(votes))]
@@ -144,6 +160,7 @@ def EcPtToStr(pt):
 
 def strToEcPt(s, group):
 	return EcPt.from_binary(binascii.unhexlify(s), group)
+
 
 def doFiatShamir(votes, vote_commits, randoms, tally):
 	pmv_masks_pi = [permuteAndMask(votes, vote_commits) for i in range(K)]
@@ -181,6 +198,7 @@ vote_commits = [v[1] for v in vote_data]
 randoms = [v[2] for v in vote_data]
 
 receipts = [v[6] for v in vote_data]
+verifyChallenge(receipts[0]['challenges'], receipts[0]['vote_commitment'])
 #print(receipts_json)
 
 tally = Counter(votes)
