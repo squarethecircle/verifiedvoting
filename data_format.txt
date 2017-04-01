@@ -1,7 +1,8 @@
 precinct-id: string
 receipts: array of [voterid=string
-challenges=map(candidate,(challenge,answer))
-commitment=base64_encoded_string
+challenges=map(candidate,(dict: 'challenge'->challenge,'answer'->answer,'proof'->proof))
+commitment_to_vote=base64_encoded_string
+commitment_to_whole_receipt=base64_encoded_string
 rx=string]
 precinct-tally: string
 proof:json_object(array of k [commitments],
