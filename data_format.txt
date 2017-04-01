@@ -4,7 +4,7 @@ challenges=map(candidate,(dict: 'challenge'->challenge,'answer'->answer,'proof'-
 commitment_to_vote=base64_encoded_string
 commitment_to_whole_receipt=base64_encoded_string
 rx=string]
-precinct-tally: string
+precinct-tally: map(candidate -> count)
 proof:json_object(array of k [commitments],
 proof type: enum (two options -- unmask, open),
 proofs: map(x,y)
