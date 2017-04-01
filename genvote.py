@@ -164,6 +164,7 @@ def doFiatShamir(votes, vote_commits, randoms, tally):
 		else:
 			opened = openMaskedCommitments(votes, list(map(Bn.from_hex,masks[i].split(' '))), randoms, list(map(int,pis[i].split(' '))))
 			p_dict['proof_type'] = 'open'
+			print(opened)
 			p_dict['comm_pairs'] = serializeEcPts(opened)
 			p_dict['pm_vote_commitments'] = proofs[i]
 			verifyMaskedCommitments(list(map(lambda s: strToEcPt(s,G), proofs[i].split(' '))), opened, tally)
