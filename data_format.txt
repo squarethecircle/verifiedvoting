@@ -1,0 +1,9 @@
+precinct-id: string
+receipts: array of [voterid=string
+challenges=map(candidate,(challenge,answer))
+commitment=base64_encoded_string
+rx=string]
+precinct-tally: string
+proof:json_object(array of k [commitments],
+proof type: enum (two options -- unmask, open),
+proofs: map(x,y)
