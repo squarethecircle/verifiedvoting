@@ -1,5 +1,6 @@
 from petlib.ec import EcGroup, EcPt
 from petlib.bn import Bn
+from petlib.ecdsa import do_ecdsa_sign, do_ecdsa_setup
 from hashlib import sha512
 from genzkp import ZKProof, ZKEnv, ConstGen, Sec
 from itertools import chain
@@ -8,11 +9,18 @@ import binascii
 import json
 import uuid
 import random
+import qrcode
 
 G = EcGroup(934)
 order = G.order()
 h = G.generator()
-g = order.random() * h
+g = G.hash_to_point("nothing_up_my_sleeve".encode('utf-8'))
+
+#secret!!!
+sig_key = order.random()
+kinv_rp = do_ecdsa_setup(G, sig_key)
+#not secret
+ver_key = sig_key * h
 
 def commit(a, r):
 	return a * h + r * g
@@ -121,6 +129,18 @@ def castVote(voter_id, candidate):
 	verifyCommitment(x, rc, cmt_list, rx)
 	challenge_dict = {candidate: {'challenge': DC[candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in DC}
 	receipt = serializeEcPts({'voter_id': voter_id, 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
+	sig = do_ecdsa_sign(G, sig_key, EcPtToStr(x).encode('utf-8'), kinv_rp)
+	signed_cmt = '_'.join((EcPtToStr(x), hex(sig[0])[2:], hex(sig[1])[2:]))
+	qr = qrcode.QRCode(
+			version = 1,
+			error_correction = qrcode.constants.ERROR_CORRECT_L,
+			box_size = 4,
+			border = 4,
+	)
+	qr.add_data(signed_cmt)
+	qr.make()
+	img = qr.make_image()
+	img.save('qrcodes/to_print.png')
 	return (candidate, rc, R, everything, str(x), answers, receipt)
 
 def verifyChallenge(cd, vote_commitment):
