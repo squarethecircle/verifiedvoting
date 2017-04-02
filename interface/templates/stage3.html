@@ -1,0 +1,30 @@
+<!-- Confirming printed lines -->
+
+<html>
+	<head>
+		<script>
+			document.addEventListener('keydown', function(event) {
+			    if (event.keyCode == 13) {
+			        document.location.href = '/stage4';
+			    }
+			    else if (event.keyCode == 27) {
+			    	document.location.href = '/stage1';
+			    }
+			}, true);
+		</script>
+	</head>
+
+	<p>You are voting for: {{ cands[chosen][1] }}</p>
+
+	<p>Please verify that two lines were printed. Those lines should be behind the shield.</p>
+	<p>Press ENTER to accept, ESC to vote for someone else or if the lines do not match.</p>
+
+	{% for c in cands %}
+		{% if c[0] != chosen %}
+			<p> {{ c[0] }} | {{ c[1] }} | {{ challenges[c[0]] }} </p>
+		{% else %}
+			<p> {{ c[0] }} | {{ c[1] }} | NOT_YET </p>
+		{% endif %}
+	{% endfor %}
+
+</html>

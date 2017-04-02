@@ -1,0 +1,27 @@
+<!-- Confirming vote and receipt receipt -->
+
+<html>
+	<head>
+		<script>
+			document.addEventListener('keydown', function(event) {
+			    if (event.keyCode == 13) {
+			        document.location.href = '/stage6';
+			    }
+			    else if (event.keyCode == 27) {
+			    	document.location.href = '/stage1';
+			    }
+			}, true);
+		</script>
+	</head>
+
+	<p>You are voting for: {{ cands[chosen][1] }}</p>
+
+	<p>Was your receipt printed and correct?</p>
+	<p>Press ENTER to accept, ESC to cancel and restart</p>
+
+
+	{% for c in cands %}
+		<p> {{ c[0] }} | {{ c[1] }} | {{ challenges[c[0]] }} </p>
+	{% endfor %}
+
+</html>

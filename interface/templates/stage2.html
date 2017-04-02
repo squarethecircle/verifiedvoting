@@ -1,0 +1,33 @@
+<!-- Challenges for other candidates -->
+
+<html>
+	<head>
+		<script>
+			document.addEventListener('keydown', function(event) {
+			    if (event.keyCode == 13) {
+			    	var challenges_form = document.getElementById("challenges_form");
+			    	challenges_form.submit();
+			    }
+			    else if (event.keyCode == 27) {
+			    	document.location.href = '/stage1';
+			    }
+			}, true);
+		</script>
+	</head>
+
+	<p>You are voting for: {{ cands[chosen][1] }}</p>
+
+	<p>Are these challenges ok?</p>
+	<p>Press ENTER to accept, ESC to vote for someone else, or use TAB to select a challenge to edit.</p>
+
+	<form id="challenges_form" action="/stage3" method="post">
+		{% for c in cands %}
+			{% if c[0] != chosen %}
+				<p> {{ c[0] }} | {{ c[1] }} | <input type="text" name="challenge{{ c[0] }}" value="{{ challenges[c[0]] }}"> </p>
+			{% else %}
+				<p> {{ c[0] }} | {{ c[1] }} | NOT_YET </p>
+			{% endif %}
+		{% endfor %}
+	</form>
+
+</html>

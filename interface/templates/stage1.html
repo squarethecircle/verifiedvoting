@@ -1,0 +1,27 @@
+<!-- Presenting Candidates -->
+
+<html>
+	<head>
+		<script type="text/javascript" src="{{ url_for('static', filename='post.js') }}"></script>
+		<script>
+			document.addEventListener('keydown', function(event) {
+				// check if this is a valid candidate number
+			    if (event.keyCode >= 48 && event.keyCode < 48 + {{cands|length}}) {
+			    	chosen = event.keyCode - 48;
+			    	// alert(chosen);
+			        post("/stage2", {chosen: chosen});
+			    }
+			    else {
+			    	alert("Invalid candidate number!");
+			    }
+			}, true);
+		</script>
+	</head>
+
+	<p>Available candidates:</p>
+
+	{% for c in cands %}
+		<p>Press {{ c[0] }} to select: {{ c[1] }}</p>
+	{% endfor %}
+
+</html>
