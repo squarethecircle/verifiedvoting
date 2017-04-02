@@ -80,8 +80,17 @@ def getRandomWord():
 	return random.choice(dictionary_words)
 
 def serializeEcPts(d):
-	new_d = dict(d)
-	for key, value in new_d.items():
+	iteror = None
+	new_d = None
+	if isinstance(d, dict):
+		new_d = dict(d)
+		iteror = new_d.items()
+	elif isinstance(d, list):
+		new_d = list(d)
+		iteror = enumerate(new_d)
+	else:
+		return d
+	for key, value in iteror:
 		if isinstance(value, EcPt):
 			new_d[key] = EcPtToStr(value)
 		elif isinstance(value, dict):
@@ -101,12 +110,15 @@ def castVote(voter_id, candidate):
 	commitments, randoms = genFakeCommitments(DC, K, candidate, R)
 	randoms[candidate] = rb
 	commitments[candidate] = masks
-	everything = challengeHash(''.join(map(str,[rc] + list(chain(commitments.values())))), K) #alphabetize this
+	cmt_list = []
+	for sk in sorted(commitments):
+		cmt_list.append(commitments[sk])
+	everything = challengeHash(''.join(map(str,[rc] + list(chain(cmt_list)))), K) #alphabetize this
 	rx = order.random()
 	x = commit(Bn.from_hex(everything), rx)
 	DC[candidate] = ' '.join([getRandomWord() for i in range(4)])  #random challenge real vote
 	answers = answerChallenges(DC, randoms, K, R)
-	verifyCommitment(x, rc, commitments, rx)
+	verifyCommitment(x, rc, cmt_list, rx)
 	challenge_dict = {candidate: {'challenge': DC[candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in DC}
 	receipt = serializeEcPts({'voter_id': voter_id, 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
 	return (candidate, rc, R, everything, str(x), answers, receipt)
@@ -128,7 +140,7 @@ def verifyChallenge(cd, vote_commitment):
 
 
 def verifyCommitment(x, vote, commitments, rx):
-	everything = challengeHash(''.join(map(str,[vote] + list(chain(commitments.values())))), K) #alphabetize this
+	everything = challengeHash(''.join(map(str,[vote] + list(chain(commitments)))), K) #alphabetize this
 	result = commit(Bn.from_hex(everything), rx)
 	assert(result == x)
 
@@ -181,7 +193,7 @@ def doFiatShamir(votes, vote_commits, randoms, tally):
 		else:
 			opened = openMaskedCommitments(votes, list(map(Bn.from_hex,masks[i].split(' '))), randoms, list(map(int,pis[i].split(' '))))
 			p_dict['proof_type'] = 'open'
-			print(opened)
+			#print(opened)
 			p_dict['comm_pairs'] = serializeEcPts(opened)
 			p_dict['pm_vote_commitments'] = proofs[i]
 			verifyMaskedCommitments(list(map(lambda s: strToEcPt(s,G), proofs[i].split(' '))), opened, tally)
@@ -206,7 +218,7 @@ tally = Counter(votes)
 print(tally)
 
 proofs = doFiatShamir(votes, vote_commits, randoms, tally)
-big_dict = {'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
+big_dict = {'G': '934', 'g': EcPtToStr(g), 'h': EcPtToStr(h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
 json_str = json.dumps(big_dict)
 #print(json.dumps(big_dict))
 for candidate in tally:
