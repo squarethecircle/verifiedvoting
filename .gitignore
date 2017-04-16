@@ -1,5 +1,4 @@
 __pycache__/
 *.pyc
 *.json
-qrcodes/*
 .DS_Store

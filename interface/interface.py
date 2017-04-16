@@ -46,6 +46,7 @@ def convert_keys_to_int(d):
 		new_d[int(k)] = v
 
 	return new_d
+
 def reset_dict_keys():
 	session["rev_d"] = convert_keys_to_int(session["rev_d"])
 	session["challenges"] = convert_keys_to_int(session["challenges"])

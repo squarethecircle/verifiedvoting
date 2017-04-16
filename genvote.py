@@ -14,7 +14,8 @@ import qrcode
 G = EcGroup(934)
 order = G.order()
 h = G.generator()
-g = G.hash_to_point("nothing_up_my_sleeve".encode('utf-8'))
+sleeve = "nothing_up_my_sleeve"
+g = G.hash_to_point(sleeve.encode('utf-8'))
 
 #secret!!!
 sig_key = order.random()
@@ -238,7 +239,7 @@ tally = Counter(votes)
 print(tally)
 
 proofs = doFiatShamir(votes, vote_commits, randoms, tally)
-big_dict = {'G': '934', 'g': EcPtToStr(g), 'h': EcPtToStr(h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
+big_dict = {'G': '934', 'sleeve': sleeve, 'g': EcPtToStr(g), 'h': EcPtToStr(h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
 json_str = json.dumps(big_dict)
 #print(json.dumps(big_dict))
 for candidate in tally:

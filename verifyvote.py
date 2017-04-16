@@ -71,10 +71,19 @@ def verifyCommitment(x, vote, commitments, rx, G, h, g):
 def strToEcPt(s, group):
 	return EcPt.from_binary(binascii.unhexlify(s), group)
 
+def verifyParams(G, g, h, sleeve):
+	myg = G.hash_to_point(sleeve.encode('utf-8'))
+	myh = G.generator()
+	assert(g == myg)
+	assert(h == myh)
+
 def verifyVotes(ver_d):
 	G = EcGroup(int(ver_d['G'])) 
 	g = strToEcPt(ver_d['g'], G)
 	h = strToEcPt(ver_d['h'], G)
+	sleeve = ver_d['sleeve']
+	#verify construction of g from sleeve
+	verifyParams(G, g, h, sleeve)
 	#print(ver_d['receipts'][0]['voter_id'])
 	#verify commitments for each vote
 	for receipt in ver_d['receipts']:
