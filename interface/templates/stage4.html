@@ -16,17 +16,17 @@
 		</script>
 	</head>
 
-	<p>You are voting for: {{ cands[chosen][1] }}</p>
+	<p>You are voting for: {{ cand_dict[chosen] }}</p>
 
 	<p>Is this challenge ok?</p>
 	<p>Press ENTER to accept, ESC to vote for someone else, or use TAB to select the challenge to edit.</p>
 
 	<form id="challenges_form" action="/stage5" method="post">
-		{% for c in cands %}
-			{% if c[0] != chosen %}
-				<p> {{ c[0] }} | {{ c[1] }} | {{ challenges[c[0]] }} </p>
+		{% for c in candidates %}
+			{% if c != chosen %}
+				<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
 			{% else %}
-				<p> {{ c[0] }} | {{ c[1] }} | <input type="text" name="chosen_challenge" value="{{ chosen_challenge }}"> </p>
+				<p> {{ c }} | {{ cand_dict[c] }} | <input type="text" name="chosen_challenge" value="{{ chosen_challenge }}"> </p>
 			{% endif %}
 		{% endfor %}
 	</form>

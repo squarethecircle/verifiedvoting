@@ -6,7 +6,7 @@
 		<script>
 			document.addEventListener('keydown', function(event) {
 				// check if this is a valid candidate number
-			    if (event.keyCode >= 48 && event.keyCode < 48 + {{cands|length}}) {
+			    if (event.keyCode > 48 && event.keyCode <= 48 + {{candidates|length}}) {
 			    	chosen = event.keyCode - 48;
 			    	// alert(chosen);
 			        post("/stage2", {chosen: chosen});
@@ -20,8 +20,8 @@
 
 	<p>Available candidates:</p>
 
-	{% for c in cands %}
-		<p>Press {{ c[0] }} to select: {{ c[1] }}</p>
+	{% for c in candidates %}
+		<p>Press {{ c }} to select: {{ cand_dict[c] }}</p>
 	{% endfor %}
 
 </html>

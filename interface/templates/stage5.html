@@ -14,14 +14,14 @@
 		</script>
 	</head>
 
-	<p>You are voting for: {{ cands[chosen][1] }}</p>
+	<p>You are voting for: {{ cand_dict[chosen] }}</p>
 
 	<p>Was your receipt printed and correct?</p>
 	<p>Press ENTER to accept, ESC to cancel and restart</p>
 
 
-	{% for c in cands %}
-		<p> {{ c[0] }} | {{ c[1] }} | {{ challenges[c[0]] }} </p>
+	{% for c in candidates %}
+		<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
 	{% endfor %}
 
 </html>

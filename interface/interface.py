@@ -5,7 +5,7 @@ from flask import session
 import numpy
 
 app = Flask(__name__)
-app.secret_key = "should be more random than this"
+app.secret_key = "should be more secret than this"
 
 # class Candidate:
 # 	def __init__(self, name, party, office):
@@ -38,14 +38,40 @@ app.secret_key = "should be more random than this"
 #     r.add_cand("Rover", "Red")
 #     return r	
 
-def initialize_cands():
+# written because of a weird bug where a dictionary persisted in session had its keys switch from ints to unicode
+def convert_keys_to_int(d):
 
-	cands = []
-	cands.append("Bertha (Blue Party)")
-	cands.append("Gilbert (Green Party)")
-	cands.append("Rover (Red Party)")
+	new_d = {}
+	for k,v in d.items():
+		new_d[int(k)] = v
 
-	return cands
+	return new_d
+def reset_dict_keys():
+	session["rev_d"] = convert_keys_to_int(session["rev_d"])
+	session["challenges"] = convert_keys_to_int(session["challenges"])
+
+def initialize():
+
+	# cands = []
+	# cands.append("Bertha (Blue Party)")
+	# cands.append("Gilbert (Green Party)")
+	# cands.append("Rover (Red Party)")
+
+	# cands = {'ALICE': 1, 'BETTY': 2, 'CHARLIE': 3}
+
+	session["d"] = {'ALICE': 1, 'BETTY': 2, 'CHARLIE': 3}
+	session["rev_d"] = {v:k for k,v in session["d"].items()}
+	session["candidates"] = [session["d"]['ALICE'], session["d"]['BETTY'], session["d"]['CHARLIE']]
+
+	# with open('/usr/share/dict/words') as f:
+	# 	session["dictionary_words"] = list(map(str.strip,f.readlines()))
+
+	session["dictionary_words"] = ["hello", "these", "are", "challenge", "words", "which", "should", "later", "be", "replaced", "by", "a", "dictionary"]
+
+	session["lenChallenge"] = 3
+	session["chosen"] = None
+	session["challenges"] = {}
+	session["chosen_challenge"] = None
 
 @app.route("/")
 def stage0():
@@ -55,40 +81,50 @@ def stage0():
 def stage1():
 
 	# initialize session
-    session["cands"] = initialize_cands()
-    session["words"] = ["hello", "these", "are", "challenge", "words", "which", "should", "later", "be", "replaced", "by", "a", "dictionary"]
-    session["lenChallenge"] = 3
-    session["chosen"] = None
-    session["challenges"] = None
-    session["chosen_challenge"] = None
+    
+    # session["words"] = ["hello", "these", "are", "challenge", "words", "which", "should", "later", "be", "replaced", "by", "a", "dictionary"]
+    # session["lenChallenge"] = 3
+    # session["chosen"] = None
+    # session["challenges"] = None
+    # session["chosen_challenge"] = None
 
+
+    initialize()
 
     # i = Interaction(r)
     # i.start()
-    return render_template("stage1.html", cands = [(i, c) for i,c in enumerate(session["cands"])])
+    return render_template("stage1.html", candidates = session["candidates"], cand_dict = session["rev_d"])
 
 @app.route("/stage2", methods = ["POST"])
 # @app.route("/")
 def stage2():
 	
+
+	# super annoying that I have to do this for some reason
+	reset_dict_keys()
+
 	session["chosen"] = int(request.form["chosen"])
 
 	# should never be triggered because we check in stage2.html
-	assert(session["chosen"] >= 0 and session["chosen"] < len(session["cands"]))
+	assert(session["chosen"] > 0 and session["chosen"] <= len(session["candidates"]))
 	
-	challenges = {i:" ".join(numpy.random.choice(session["words"], session["lenChallenge"], replace = False)) for i,c in enumerate(session["cands"])}
+	challenges = {i:" ".join(numpy.random.choice(session["dictionary_words"], session["lenChallenge"], replace = False)) for i in session["candidates"]}
 	challenges[session["chosen"]] = None
 	# print("I'm in stage 2")
 	# print(challenges)
 
-	return render_template("stage2.html", cands = [(i, c) for i,c in enumerate(session["cands"])], chosen = session["chosen"], challenges = challenges)
+
+	return render_template("stage2.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = challenges)
 
 @app.route("/stage3", methods = ["POST"])
 # @app.route("/")
 def stage3():
+
+	# super annoying that I have to do this for some reason
+	reset_dict_keys()
 	
 	session["challenges"] = {}
-	for i in range(0, len(session["cands"])):
+	for i in session["candidates"]:
 		if i != session["chosen"]:
 			session["challenges"][i] = request.form["challenge" + str(i)]
 		else:
@@ -97,40 +133,38 @@ def stage3():
 	# print(session["challenges"])
 
 
-	return render_template("stage3.html", cands = [(i, c) for i,c in enumerate(session["cands"])], chosen = session["chosen"], challenges = session["challenges"])
+	
 
-# written because of a weird bug where a dictionary persisted in session had its keys switch from ints to unicode
-def convert_keys_to_int(d):
+	return render_template("stage3.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"])
 
-	new_d = {}
-	for k,v in d.items():
-		new_d[int(k)] = v
 
-	return new_d
 
 
 @app.route("/stage4")
 # @app.route("/")
 def stage4():
 
-	
-	session["challenges"] = convert_keys_to_int(session["challenges"])
+	# super annoying that I have to do this for some reason
+	reset_dict_keys()
 	# print("I'm in stage 4")
 	# print(session["challenges"])
 
-	chosen_challenge = " ".join(numpy.random.choice(session["words"], session["lenChallenge"], replace = False))
+	chosen_challenge = " ".join(numpy.random.choice(session["dictionary_words"], session["lenChallenge"], replace = False))
 
-	return render_template("stage4.html", cands = [(i, c) for i,c in enumerate(session["cands"])], chosen = session["chosen"], challenges = session["challenges"], chosen_challenge = chosen_challenge)
+	return render_template("stage4.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"], chosen_challenge = chosen_challenge)
 
 
 @app.route("/stage5", methods = ["POST"])
 # @app.route("/")
 def stage5():
 
-	session["challenges"] = convert_keys_to_int(session["challenges"])
+	# super annoying that I have to do this for some reason
+	reset_dict_keys()
+
+
 	session["challenges"][session["chosen"]] = request.form["chosen_challenge"]
 
-	return render_template("stage5.html", cands = [(i, c) for i,c in enumerate(session["cands"])], chosen = session["chosen"], challenges = session["challenges"])
+	return render_template("stage5.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"])
 
 @app.route("/stage6")
 def stage6():

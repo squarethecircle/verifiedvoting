@@ -14,16 +14,16 @@
 		</script>
 	</head>
 
-	<p>You are voting for: {{ cands[chosen][1] }}</p>
+	<p>You are voting for: {{ cand_dict[chosen] }}</p>
 
-	<p>Please verify that two lines were printed. Those lines should be behind the shield.</p>
+	<p>Please verify that two lines were printed. The lines should be behind the shield.</p>
 	<p>Press ENTER to accept, ESC to vote for someone else or if the lines do not match.</p>
 
-	{% for c in cands %}
-		{% if c[0] != chosen %}
-			<p> {{ c[0] }} | {{ c[1] }} | {{ challenges[c[0]] }} </p>
+	{% for c in candidates %}
+		{% if c != chosen %}
+			<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
 		{% else %}
-			<p> {{ c[0] }} | {{ c[1] }} | NOT_YET </p>
+			<p> {{ c }} | {{ cand_dict[c] }} | NOT_YET </p>
 		{% endif %}
 	{% endfor %}
 
