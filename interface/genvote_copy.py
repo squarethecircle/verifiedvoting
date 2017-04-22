@@ -183,7 +183,11 @@ def verifyMaskedCommitments(pm_vote_commitments, comm_pairs, tally):
 	assert(tally == Counter(permuted_votes))
 
 def verifyPermutation(pm_vote_commitments, vote_commits, maskers, pi):
-	assert(pm_vote_commitments == [vote_commits[pi[i]] + maskers[pi[i]] * g for i in range(len(votes))])
+
+	# JUST CHECKING THAT I WASN'T BREAKING THINGS CHANGING RANGE(LEN(VOTES)) TO RANGE(LEN(VOTE_COMMITS))
+	# print("len(votes): ",len(votes))
+	# print("len(vote_commits): ",len(vote_commits))
+	assert(pm_vote_commitments == [vote_commits[pi[i]] + maskers[pi[i]] * g for i in range(len(vote_commits))])
 
 
 def EcPtToStr(pt):

@@ -14,12 +14,17 @@ import uuid
 from itertools import chain
 from petlib.bn import Bn
 from petlib.ec import EcGroup, EcPt
+from petlib.pack import encode, decode
+from petlib.ecdsa import do_ecdsa_sign, do_ecdsa_setup
+import qrcode
+from collections import defaultdict, Counter
+import json
 
 
 app = Flask(__name__)
 app.secret_key = "should be more secret than this" # OBVIOUSLY NEEDS TO CHANGE
 
-# app.session_interface = RedisSessionInterface()
+app.session_interface = RedisSessionInterface()
 
 # written because of a weird bug where a dictionary persisted in session had its keys switch from ints to unicode
 def convert_keys_to_int(d):
@@ -59,55 +64,128 @@ def serializeBns(d):
 			new_d[key] = tuple(map(serializeBns, value))
 	return new_d
 
+# need this because can't serialize vote_data
+def append_vote_data(vd):
+
+	vote_data = decode (session["vote_data"])
+	vote_data.append(vd)
+	session["vote_data"] = encode (vote_data)
 
 # serialize these Bn and EctPt -based objects before putting them in session
 def persist_tricky_objects(R = None, rc = None, masks = None, rb = None, commitments = None,
 	randoms = None, cmt_list = None, everything = None, rx = None, x = None, answers = None, receipt = None):
 
-	session["R"] = serializeBns(R)
-	
-	session["rc"] = genvote.EcPtToStr(rc)
+	print ("SERIALIZING STUFF!")
 
-	session["masks"] = genvote.serializeEcPts(masks)
+	print("R: ", type(R), type(encode(R)))
+	session["R"] = encode(R)
 
-	session["rb"] = serializeBns(rb)
+	print("rc: ", type(rc), type(encode(rc)))
+	session["rc"] = encode(rc)
 
-	session["commitments"] = genvote.serializeEcPts(commitments)
+	print("masks: ", type(masks), type(encode(masks)))
+	session["masks"] = encode(masks)
 
-	session["randoms"] = serializeBns(randoms)
+	print("rb: ", type(rb), type(encode(rb)))
+	session["rb"] = encode(rb)
 
-	session["cmt_list"] = genvote.serializeEcPts(cmt_list)
+	print("commitments: ", type(commitments), type(encode(commitments)))
+	session["commitments"] = encode(commitments)
 
+	print("randoms: ", type(randoms), type(encode(randoms)))
+	session["randoms"] = encode(randoms)
+
+	print("cmt_list: ", type(cmt_list), type(encode(cmt_list)))
+	session["cmt_list"] = encode(cmt_list)
+
+	# i think this is fine as is
+	print("everything", type(everything))
 	session["everything"] = everything
 
-	session["rx"] = serializeBns(rx)
+	print("rx: ", type(rx), type(encode(rx)))
+	session["rx"] = encode(rx)
 
-	session["x"] = genvote.EcPtToStr(x)
+	print("x: ", type(x), type(encode(x)))
+	session["x"] = encode(x)
 
-	# THIS ISN'T CORRECT YET!
-	print("answers: ", type(answers))
-	session["answers"] = answers
-	print("receipt: ", type(receipt))
-	session["receipt"] = receipt
+	# print("answers: ", type(answers))
+	session["answers"] = encode(answers)
+	# print("receipt: ", type(receipt))
+	session["receipt"] = encode(receipt)
+
+
+
+
+	# session["R"] = serializeBns(R)
+	
+	# session["rc"] = genvote.EcPtToStr(rc)
+
+	# session["masks"] = genvote.serializeEcPts(masks)
+
+	# session["rb"] = serializeBns(rb)
+
+	# session["commitments"] = genvote.serializeEcPts(commitments)
+
+	# session["randoms"] = serializeBns(randoms)
+
+	# session["cmt_list"] = genvote.serializeEcPts(cmt_list)
+
+	# session["everything"] = everything
+
+	# session["rx"] = serializeBns(rx)
+
+	# session["x"] = genvote.EcPtToStr(x)
+
+	# # THIS ISN'T CORRECT YET!
+	# print("answers: ", type(answers))
+	# session["answers"] = answers
+	# print("receipt: ", type(receipt))
+	# session["receipt"] = receipt
+
+
 
 
 # convert from serialized form in session to original form
 # currently, just returns objects as they appear in session!
 def desist_tricky_objects():
 
+	print ("deSERIALIZING STUFF!")
+
 	# weirdly, R = Bn.from_hex(session["R"]) gives a BN Error exception
-	R = session["R"]
-	rc = session["rc"]
-	masks = session["masks"]
-	rb = session["rb"]
-	commitments = session["commitments"]
-	randoms = session["randoms"]
-	cmt_list = session["cmt_list"]
+	
+	R = decode(session["R"])
+	print("R: ", type(session["R"]), type(R))
+	
+	rc = decode(session["rc"])
+	print("rc: ", type(session["rc"]), type(rc))
+	
+	masks = decode(session["masks"])
+	print("masks: ", type(session["masks"]), type(masks))
+	
+	rb = decode(session["rb"])
+	print("rb: ", type(session["rb"]), type(rb))
+
+	commitments = decode(session["commitments"])
+	print("commitments: ", type(session["commitments"]), type(commitments))
+
+	randoms = decode(session["randoms"])
+	print("randoms: ", type(session["randoms"]), type(randoms))
+
+	cmt_list = decode(session["cmt_list"])
+	print("cmt_list: ", type(session["cmt_list"]), type(cmt_list))
+
 	everything = session["everything"]
-	rx = session["rx"]
-	x = session["x"]
-	answers = session["answers"]
-	receipt = session["receipt"]
+	print("everything: ", type(session["everything"]), type(everything))
+
+	rx = decode(session["rx"])
+	print("rx: ", type(session["rx"]), type(rx))
+
+	x = decode(session["x"])
+	print("x: ", type(session["x"]), type(x))
+
+
+	answers = decode(session["answers"])
+	receipt = decode(session["receipt"])
 
 	return R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt
 
@@ -128,7 +206,8 @@ def setup_machine():
 
 	# where votes are stored
 	# gradually filled as more users use machine
-	session["vote_data"] = []
+	# needs to be encoded because will contain material that will need to be encoded
+	session["vote_data"] = encode([])
 
 # values that should be refreshed every time there is a new voter
 def new_voter():
@@ -234,6 +313,12 @@ def stage3():
 	x = genvote.commit(Bn.from_hex(everything), rx)
 
 
+	print("CHECKING THAT ENCODE AND DECODE WORK!!!!!")
+	eR = encode(R)
+	ueR = decode(eR)
+	print("R: ", type(R), type(eR), type(ueR), R == ueR)
+
+
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers = None, receipt = None)
 
 	# print(session["challenges"])
@@ -320,7 +405,6 @@ def stage5():
 	qr.add_data(signed_cmt)
 	qr.make()
 	img = qr.make_image()
-	img.save()
 	img.save('qrcodes/to_print.png')
 	# REALLY, WE NEED TO PRINT THE QR CODE
 
@@ -334,14 +418,15 @@ def stage6():
 	R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt = desist_tricky_objects()
 
 	# after confirming, store voter information
-	session["vote_data"].append((session["chosen"], rc, R, everything, str(x), answers, receipt))
+	append_vote_data((session["chosen"], rc, R, everything, str(x), answers, receipt))
 
 	return render_template("stage6.html")
 
 @app.route("/finish")
 def finish():
 
-	session["vote_data"].sort(key = lambda x: x[6]['voter_id'])
+	vote_data = decode(session["vote_data"])
+	vote_data.sort(key = lambda x: x[6]['voter_id'])
 	votes = [v[0] for v in vote_data]
 	vote_commits = [v[1] for v in vote_data]
 	randoms = [v[2] for v in vote_data]
@@ -353,7 +438,7 @@ def finish():
 	print(tally)
 
 	proofs = genvote.doFiatShamir(votes, vote_commits, randoms, tally)
-	big_dict = {'G': '934', 'sleeve': genvote.sleeve, 'g': genvote.EcPtToStr(g), 'h': genvote.EcPtToStr(h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
+	big_dict = {'G': '934', 'sleeve': genvote.sleeve, 'g': genvote.EcPtToStr(genvote.g), 'h': genvote.EcPtToStr(genvote.h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
 	json_str = json.dumps(big_dict)
 
 	for candidate in tally:
