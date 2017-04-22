@@ -182,12 +182,9 @@ def verifyMaskedCommitments(pm_vote_commitments, comm_pairs, tally):
 		assert(comm == commit(unmask[0], Bn.from_decimal(unmask[1])))
 	assert(tally == Counter(permuted_votes))
 
-def verifyPermutation(pm_vote_commitments, vote_commits, maskers, pi):
-
-	# JUST CHECKING THAT I WASN'T BREAKING THINGS CHANGING RANGE(LEN(VOTES)) TO RANGE(LEN(VOTE_COMMITS))
-	# print("len(votes): ",len(votes))
-	# print("len(vote_commits): ",len(vote_commits))
-	assert(pm_vote_commitments == [vote_commits[pi[i]] + maskers[pi[i]] * g for i in range(len(vote_commits))])
+# added votes to arguments
+def verifyPermutation(pm_vote_commitments, vote_commits, maskers, pi, votes):
+	assert(pm_vote_commitments == [vote_commits[pi[i]] + maskers[pi[i]] * g for i in range(len(votes))])
 
 
 def EcPtToStr(pt):
@@ -214,7 +211,7 @@ def doFiatShamir(votes, vote_commits, randoms, tally):
 			p_dict['maskers'] = masks[i]
 			p_dict['pi'] = pis[i]
 			p_dict['pm_vote_commitments'] = proofs[i]
-			verifyPermutation(list(map(lambda s: strToEcPt(s,G) , proofs[i].split(' '))), vote_commits, list(map(Bn.from_hex,masks[i].split(' '))), list(map(int, pis[i].split(' '))))
+			verifyPermutation(list(map(lambda s: strToEcPt(s,G) , proofs[i].split(' '))), vote_commits, list(map(Bn.from_hex,masks[i].split(' '))), list(map(int, pis[i].split(' '))), votes)
 		else:
 			opened = openMaskedCommitments(votes, list(map(Bn.from_hex,masks[i].split(' '))), randoms, list(map(int,pis[i].split(' '))))
 			p_dict['proof_type'] = 'open'
