@@ -8,7 +8,7 @@ import os
 from RedisSession import RedisSessionInterface
 
 # using this version which has code at bottom commented out to speed things up
-import genvote_copy as genvote
+import genvote_interface as genvote
 
 import uuid
 from itertools import chain
@@ -323,7 +323,7 @@ def stage5():
 	R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt = desist_tricky_objects()
 
 	answers = genvote.answerChallenges(session["challenges"], randoms, genvote.K, R)
-	genvote.verifyCommitment(x, rc, cmt_list, rx)
+	# genvote.verifyCommitment(x, rc, cmt_list, rx)
 	challenge_dict = {candidate: {'challenge': session["challenges"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
 	receipt = genvote.serializeEcPts({'voter_id': session["voter_id"], 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
 	sig = do_ecdsa_sign(genvote.G, genvote.sig_key, genvote.EcPtToStr(x).encode('utf-8'), genvote.kinv_rp)
@@ -364,7 +364,7 @@ def finish():
 	randoms = [v[2] for v in vote_data]
 
 	receipts = [v[6] for v in vote_data]
-	genvote.verifyChallenge(receipts[0]['challenges'], receipts[0]['vote_commitment'])
+	# genvote.verifyChallenge(receipts[0]['challenges'], receipts[0]['vote_commitment'])
 
 	tally = Counter(votes)
 	print(tally)

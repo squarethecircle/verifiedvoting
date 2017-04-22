@@ -144,26 +144,26 @@ def castVote(voter_id, candidate):
 	img.save('qrcodes/to_print.png')
 	return (candidate, rc, R, everything, str(x), answers, receipt)
 
-def verifyChallenge(cd, vote_commitment):
-	vc = strToEcPt(vote_commitment, G)
-	for candidate in cd:
-		answers = list(map(Bn.from_decimal,cd[candidate]['answer']))
-		proofs = list(map(lambda l: strToEcPt(l, G), cd[candidate]['proof']))
-		challenge_bits = int(challengeHash(cd[candidate]['challenge'], K), 16)
-		for i in range(K):
-			if (challenge_bits & 1) == 0:
-				assert(proofs[i] == commit(candidate, answers[i]))
-			else:
-				assert(proofs[i] == vc + answers[i] * g)
-			challenge_bits >>= 1
+# def verifyChallenge(cd, vote_commitment):
+# 	vc = strToEcPt(vote_commitment, G)
+# 	for candidate in cd:
+# 		answers = list(map(Bn.from_decimal,cd[candidate]['answer']))
+# 		proofs = list(map(lambda l: strToEcPt(l, G), cd[candidate]['proof']))
+# 		challenge_bits = int(challengeHash(cd[candidate]['challenge'], K), 16)
+# 		for i in range(K):
+# 			if (challenge_bits & 1) == 0:
+# 				assert(proofs[i] == commit(candidate, answers[i]))
+# 			else:
+# 				assert(proofs[i] == vc + answers[i] * g)
+# 			challenge_bits >>= 1
 
 
 
 
-def verifyCommitment(x, vote, commitments, rx):
-	everything = challengeHash(''.join(map(str,[vote] + list(chain(commitments)))), K) #alphabetize this
-	result = commit(Bn.from_hex(everything), rx)
-	assert(result == x)
+# def verifyCommitment(x, vote, commitments, rx):
+# 	everything = challengeHash(''.join(map(str,[vote] + list(chain(commitments)))), K) #alphabetize this
+# 	result = commit(Bn.from_hex(everything), rx)
+# 	assert(result == x)
 
 def permuteAndMask(votes, vote_commitments):
 	pi = list(range(len(votes)))
@@ -175,16 +175,16 @@ def permuteAndMask(votes, vote_commitments):
 def openMaskedCommitments(votes, maskers, r, pi):
 	return [(votes[pi[i]], str(r[pi[i]] + maskers[pi[i]])) for i in range(len(votes))]
 
-def verifyMaskedCommitments(pm_vote_commitments, comm_pairs, tally):
-	permuted_votes = []
-	for comm, unmask in zip(pm_vote_commitments, comm_pairs):
-		permuted_votes.append(unmask[0])
-		assert(comm == commit(unmask[0], Bn.from_decimal(unmask[1])))
-	assert(tally == Counter(permuted_votes))
+# def verifyMaskedCommitments(pm_vote_commitments, comm_pairs, tally):
+# 	permuted_votes = []
+# 	for comm, unmask in zip(pm_vote_commitments, comm_pairs):
+# 		permuted_votes.append(unmask[0])
+# 		assert(comm == commit(unmask[0], Bn.from_decimal(unmask[1])))
+# 	assert(tally == Counter(permuted_votes))
 
-# added votes to arguments
-def verifyPermutation(pm_vote_commitments, vote_commits, maskers, pi, votes):
-	assert(pm_vote_commitments == [vote_commits[pi[i]] + maskers[pi[i]] * g for i in range(len(votes))])
+# # added votes to arguments
+# def verifyPermutation(pm_vote_commitments, vote_commits, maskers, pi, votes):
+# 	assert(pm_vote_commitments == [vote_commits[pi[i]] + maskers[pi[i]] * g for i in range(len(votes))])
 
 
 def EcPtToStr(pt):
@@ -211,14 +211,14 @@ def doFiatShamir(votes, vote_commits, randoms, tally):
 			p_dict['maskers'] = masks[i]
 			p_dict['pi'] = pis[i]
 			p_dict['pm_vote_commitments'] = proofs[i]
-			verifyPermutation(list(map(lambda s: strToEcPt(s,G) , proofs[i].split(' '))), vote_commits, list(map(Bn.from_hex,masks[i].split(' '))), list(map(int, pis[i].split(' '))), votes)
+			# verifyPermutation(list(map(lambda s: strToEcPt(s,G) , proofs[i].split(' '))), vote_commits, list(map(Bn.from_hex,masks[i].split(' '))), list(map(int, pis[i].split(' '))), votes)
 		else:
 			opened = openMaskedCommitments(votes, list(map(Bn.from_hex,masks[i].split(' '))), randoms, list(map(int,pis[i].split(' '))))
 			p_dict['proof_type'] = 'open'
 			#print(opened)
 			p_dict['comm_pairs'] = serializeEcPts(opened)
 			p_dict['pm_vote_commitments'] = proofs[i]
-			verifyMaskedCommitments(list(map(lambda s: strToEcPt(s,G), proofs[i].split(' '))), opened, tally)
+			# verifyMaskedCommitments(list(map(lambda s: strToEcPt(s,G), proofs[i].split(' '))), opened, tally)
 		beacon >>= 1
 		proof_l.append(dict(p_dict))
 	return proof_l
