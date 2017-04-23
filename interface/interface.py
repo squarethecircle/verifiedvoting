@@ -3,6 +3,7 @@ from flask import render_template
 from flask import request
 from flask import session
 import numpy
+import os
 
 import os
 from RedisSession import RedisSessionInterface
@@ -287,6 +288,7 @@ def stage3():
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers = None, receipt = None)
 
 	# NOW WE NEED TO PRINT THE TWO LINES BEHIND THE SHIELD
+	os.system('echo "LINES_BEHIND_SHIELD" | lpr')
 
 	return render_template("stage3.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"], voter_id = session["voter_id"])
 
@@ -337,8 +339,10 @@ def stage5():
 	qr.add_data(signed_cmt)
 	qr.make()
 	img = qr.make_image()
-	img.save('qrcodes/' + session["voter_id"] + '.png')
+	qr_path = '~/qrcodes/' + session["voter_id"] + '.png'
+	img.save(qr_path)
 	# REALLY, WE NEED TO PRINT THE QR CODE HERE, NOT SAVE IT
+	os.system('lpr -o fit-to-page ' + qr_path)
 
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt)
 
