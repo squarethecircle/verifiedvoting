@@ -337,7 +337,7 @@ def stage5():
 	qr.add_data(signed_cmt)
 	qr.make()
 	img = qr.make_image()
-	img.save('qrcodes/to_print.png')
+	img.save('qrcodes/' + session["voter_id"] + '.png')
 	# REALLY, WE NEED TO PRINT THE QR CODE HERE, NOT SAVE IT
 
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt)
