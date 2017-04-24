@@ -259,7 +259,7 @@ def stage2():
 # @app.route("/")
 def stage3():
 
-	# super annoying that I have to do this
+	# super annoying that gI have to do this
 	reset_dict_keys()
 	
 	session["challenges"] = {}
@@ -283,7 +283,7 @@ def stage3():
 	x = genvote.commit(Bn.from_hex(everything), rx)
 
 
-	# print("CHECKING THAT ENCODE AND DECODE WORK!")
+	# print("gCHECKING THAT ENCODE AND DECODE WORK!")
 	# eR = encode(R)
 	# ueR = decode(eR)
 	# print("R: ", type(R), type(eR), type(ueR), R == ueR)
@@ -292,7 +292,7 @@ def stage3():
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers = None, receipt = None)
 
 	# NOW WE NEED TO PRINT THE TWO LINES BEHIND THE SHIELD
-	os.system('echo "LINES_BEHIND_SHIELD" | lpr')
+	os.system('echo "' + genvote.EcPtToStr(x) + '" | lpr')
 
 	return render_template("stage3.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"], voter_id = session["voter_id"])
 
@@ -330,7 +330,7 @@ def stage5():
 
 	answers = genvote.answerChallenges(session["challenges"], randoms, genvote.K, R)
 	# genvote.verifyCommitment(x, rc, cmt_list, rx)
-	challenge_dict = {candidate: {'challenge': session["challenges"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
+	challenge_dict = {candidate: {'challenge': session["challenggenvote.EcPtToStr(x)es"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
 	receipt = genvote.serializeEcPts({'voter_id': session["voter_id"], 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
 	
 	# random beacon
@@ -354,7 +354,13 @@ def stage5():
 	qr_path = 'qrcodes/' + session["voter_id"] + '.png'
 	img.save(qr_path)
 	# REALLY, WE NEED TO PRINT THE QR CODE HERE, NOT SAVE IT
+	#os.system('echo "Signed Commitment: ' + signed_cmt + '" | lpr')
+	# print qr code
 	os.system('lpr -o fit-to-page ' + qr_path)
+	# print voter_id
+	os.system('echo "Voter ID: ' + session["voter_id"] + '" | lpr')
+	# print Receipt Certified
+	os.system('echo "--RECEIPT CERTIFIED--" | lpr')
 
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt)
 
