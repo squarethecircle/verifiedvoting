@@ -4,6 +4,7 @@ from flask import request
 from flask import session
 import numpy
 import os
+import re
 
 import os
 from RedisSession import RedisSessionInterface
@@ -20,6 +21,9 @@ from petlib.ecdsa import do_ecdsa_sign, do_ecdsa_setup
 import qrcode
 from collections import defaultdict, Counter
 import json
+
+import requests
+from bs4 import BeautifulSoup
 
 
 app = Flask(__name__)
@@ -328,6 +332,14 @@ def stage5():
 	# genvote.verifyCommitment(x, rc, cmt_list, rx)
 	challenge_dict = {candidate: {'challenge': session["challenges"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
 	receipt = genvote.serializeEcPts({'voter_id': session["voter_id"], 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
+	
+	# random beacon
+	r = requests.get("https://beacon.nist.gov/rest/record/last")
+	timestamp = re.search(r"<timeStamp>(.*)<\/timeStamp>",r.text).group(1)
+	outputvalue = re.search(r"<outputValue>(.*)<\/outputValue>",r.text).group(1)
+	# timestamp and outputvalue need to be printed to receipt in some way
+	# print(timestamp, outputvalue)
+
 	sig = do_ecdsa_sign(genvote.G, genvote.sig_key, genvote.EcPtToStr(x).encode('utf-8'), genvote.kinv_rp)
 	signed_cmt = ' '.join((genvote.EcPtToStr(x), hex(sig[0])[2:], hex(sig[1])[2:]))
 	qr = qrcode.QRCode(
@@ -339,7 +351,7 @@ def stage5():
 	qr.add_data(signed_cmt)
 	qr.make()
 	img = qr.make_image()
-	qr_path = '~/qrcodes/' + session["voter_id"] + '.png'
+	qr_path = 'qrcodes/' + session["voter_id"] + '.png'
 	img.save(qr_path)
 	# REALLY, WE NEED TO PRINT THE QR CODE HERE, NOT SAVE IT
 	os.system('lpr -o fit-to-page ' + qr_path)
