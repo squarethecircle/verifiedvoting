@@ -330,7 +330,7 @@ def stage5():
 
 	answers = genvote.answerChallenges(session["challenges"], randoms, genvote.K, R)
 	# genvote.verifyCommitment(x, rc, cmt_list, rx)
-	challenge_dict = {candidate: {'challenge': session["challenggenvote.EcPtToStr(x)es"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
+	challenge_dict = {candidate: {'challenge': session["challenges"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
 	receipt = genvote.serializeEcPts({'voter_id': session["voter_id"], 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
 	
 	# random beacon
