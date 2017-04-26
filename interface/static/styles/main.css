@@ -1,9 +1,53 @@
 body {
-    background-color: lightblue;
+    /*background-color: lightblue;*/
     /*color: ;*/
+    font-family: Georgia, serif;
 }
 
 h1 {
 	/*text-decoration: line-through;*/
 }
 
+table, th, td {
+   /*border: 1px solid black;*/
+}
+table {
+	border-collapse: collapse;
+    width: 100%;
+}
+th {
+    text-align: left;
+    background-color: lightblue;
+    color: DarkSlateGrey;
+}
+th[id="empty"] {
+	background-color: white;
+	border-bottom: none;
+}
+th, td {
+    padding: 15px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+tr:hover {
+	background-color: #f5f5f5;
+}
+td[id="fill_later"] {
+	background-color:red;
+}
+td[id="fill_now"] {
+	background-color:lightgreen
+}
+/*http://callmenick.com/post/various-css-input-text-styles*/
+input[type="text"] {
+	font-family: Georgia, serif;
+	padding: 10px;
+	width: 100%;
+	font-size: 16px;
+	/*border: solid 5px #c9c9c9;*/
+	/*transition: border 0.3s;*/
+}
+input[type="text"]:focus,
+input[type="text"].focus {
+	/*border: solid 5px #969696;	*/
+}

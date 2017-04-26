@@ -19,30 +19,29 @@
 		<p>Voter ID: <b>{{ voter_id }}</b></p>
 		<p>You are voting for: <b>{{ cand_dict[chosen] }}</b></p>
 
-		<p>Are these challenges ok?</p>
-		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to vote for someone else, or use <b>TAB</b> to select a challenge to edit.</p>
-
 		<form id="challenges_form" action="/stage3" method="post">
-			<table border="1">
+			<table>
 				<tr> 
-					<th> # </th>
-					<th> candidate </th>
-					<th> challenge </th>
+					<th></th>
+					<th> CANDIDATE </th>
+					<th> CHALLENGE </th>
 				</tr>
 				{% for c in candidates %}
 					<tr>
 						<td>{{ c }}</td>
 						<td>{{ cand_dict[c] }}</td>
 						{% if c != chosen %}
-							<td><input type="text" name="challenge{{ c }}" value="{{ challenges[c] }}"></td>
+							<td id="fill_now" "><input type="text" name="challenge{{ c }}" value="{{ challenges[c] }}"></td>
 						{% else %}				
-							<td>NOT_YET</td> 
+							<td id="fill_later"></td> 
 						{% endif %}
 					</tr>
 				{% endfor %}
 			</table>
 		</form>
-
+		<h2>Instructions</h2>
+		<p>Fill in the green entries with some random words, or accept the pre-filled defaults. You will fill in the red entry later.</p>
+		<p>Press <b>ENTER</b> to when you've finished, <b>ESC</b> to vote for someone else, or use <b>TAB</b> to select a challenge to edit.</p>
 		<!-- <form id="challenges_form" action="/stage3" method="post">
 			{% for c in candidates %}
 				{% if c != chosen %}
@@ -52,7 +51,7 @@
 				{% endif %}
 			{% endfor %}
 		</form> -->
-		
+
 	</body>
 
 </html>

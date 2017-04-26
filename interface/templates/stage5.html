@@ -18,15 +18,12 @@
 		<p>Voter ID: <b>{{ voter_id }}</b></p>
 		<p>You are voting for: <b>{{ cand_dict[chosen] }}</b></p>
 
-		<p>Was your receipt printed and correct?</p>
-		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to cancel and restart</p>
 
-
-		<table border="1">
+		<table>
 			<tr> 
-				<th> # </th>
-				<th> candidate </th>
-				<th> challenge </th>
+				<th></th>
+				<th> CANDIDATE </th>
+				<th> CHALLENGE </th>
 			</tr>
 			{% for c in candidates %}
 				<tr>
@@ -36,6 +33,10 @@
 				</tr>
 			{% endfor %}
 		</table>
+
+		<h2>Instructions</h2>
+		<p>Was your receipt printed, and does it contained the correct challenges?</p>
+		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to cancel and restart.</p>
 
 <!-- 		{% for c in candidates %}
 			<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>

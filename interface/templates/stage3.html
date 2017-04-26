@@ -18,14 +18,13 @@
 		<p>Voter ID: <b>{{ voter_id }}</b></p>
 		<p>You are voting for: <b>{{ cand_dict[chosen] }}</b></p>
 
-		<p>Please verify that two lines were printed. The lines should be behind the shield.</p>
-		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to vote for someone else or if the lines did not print.</p>
+		
 
-		<table border="1">
+		<table>
 			<tr> 
-				<th> # </th>
-				<th> candidate </th>
-				<th> challenge </th>
+				<th></th>
+				<th> CANDIDATE </th>
+				<th> CHALLENGE </th>
 			</tr>
 			{% for c in candidates %}
 				<tr>
@@ -34,11 +33,15 @@
 					{% if c != chosen %}
 						<td>{{ challenges[c] }}</td>
 					{% else %}				
-						<td>NOT_YET</td> 
+						<td id="fill_later"></td> 
 					{% endif %}
 				</tr>
 			{% endfor %}
 		</table>
+
+		<h2>Instructions</h2>
+		<p>Please verify that two lines were printed. The lines should be behind the shield, so you will not be able to read them.</p>
+		<p>Press <b>ENTER</b> when you've finished, <b>ESC</b> to cancel and restart, or summon help if the lines did not print.</p>
 <!-- 
 		{% for c in candidates %}
 			{% if c != chosen %}

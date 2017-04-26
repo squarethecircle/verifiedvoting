@@ -251,13 +251,14 @@ def start_machine():
 @app.route("/stage0")
 def stage0():
 
-	new_voter()
+	
 
-	return render_template("stage0.html", voter_id = session["voter_id"])
+	return render_template("stage0.html")
 
 @app.route("/stage1")
 def stage1():
 
+	new_voter()
 	reset_dict_keys()
 
 	# print ("candidates: ", session["candidates"])
