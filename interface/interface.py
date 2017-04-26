@@ -379,7 +379,7 @@ def stage5():
 	# print(timestamp, outputvalue)
 	print_text('RANDOM BEACON')
 	print_text('Timestamp: ' + timestamp)
-	print_text('Outputvalue: ' + outputvalue)
+	print_text('Beacon Value: ' + outputvalue)
 
 	cmt_ev = genvote.EcPtToStr(x)
 
