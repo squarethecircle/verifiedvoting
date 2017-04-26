@@ -22,9 +22,24 @@
 		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to cancel and restart</p>
 
 
-		{% for c in candidates %}
+		<table border="1">
+			<tr> 
+				<th> # </th>
+				<th> candidate </th>
+				<th> challenge </th>
+			</tr>
+			{% for c in candidates %}
+				<tr>
+					<td>{{ c }}</td>
+					<td>{{ cand_dict[c] }}</td>
+					<td>{{ challenges[c] }}</td>
+				</tr>
+			{% endfor %}
+		</table>
+
+<!-- 		{% for c in candidates %}
 			<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
-		{% endfor %}
+		{% endfor %} -->
 	</body>
 
 </html>
