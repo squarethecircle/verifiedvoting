@@ -463,7 +463,12 @@ def finish():
 	with open("./verification.json", 'w') as f:
 		f.write(json_str)
 
+	verification_file_url = os.popen("curl --upload-file ./verification.json https://transfer.sh/verification.json").read()
+
 	return render_template("finished.html")
+
+#@app.route("/verify")
+#def verroute():
 
 if __name__ == "__main__":
     app.run(port = 5678, debug = True)
