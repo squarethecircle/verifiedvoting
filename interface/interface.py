@@ -211,7 +211,7 @@ def new_voter():
 	session["challenges"] = {}
 	session["chosen_challenge"] = None
 
-	print_text('----BEGIN RECEIPT----')
+	print_text('-BEGIN RECEIPT-')
 	print_text('Voter ID: ' + session["voter_id"])
 
 	# new variables from castVote
@@ -422,7 +422,7 @@ def stage5():
 	print_text('Voter ID: ' + session["voter_id"])
 	# print Receipt Certified
 	#os.system('echo "--RECEIPT CERTIFIED--" | lpr')
-	print_text('------RECEIPT CERTIFIED------')
+	print_text('-RECEIPT CERTIFIED-')
 
 	# blank space at the bottom
 	for i in range(5):
