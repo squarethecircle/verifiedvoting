@@ -367,24 +367,41 @@ def stage5():
 	print_text('Timestamp: ' + timestamp)
 	print_text('Outputvalue: ' + outputvalue)
 
-	sig = do_ecdsa_sign(genvote.G, genvote.sig_key, genvote.EcPtToStr(x).encode('utf-8'), genvote.kinv_rp)
-	signed_cmt = ' '.join((genvote.EcPtToStr(x), hex(sig[0])[2:], hex(sig[1])[2:]))
-	qr = qrcode.QRCode(
+	cmt_ev = genvote.EcPtToStr(x)
+
+	all_qr_data_dict = {"ID": session["voter_id"], "BEACON": outputvalue, "CMT": cmt_ev, "CHALLENGES": json.dumps(challenge_dict)}
+	all_qr_data_ser = json.dumps(all_qr_data_dict)
+
+	qr_path = 'qrcodes/' + session["voter_id"] 
+
+	sig = do_ecdsa_sign(genvote.G, genvote.sig_key, all_qr_data_ser.encode('utf-8'), genvote.kinv_rp)
+	signed_data = ' '.join((hex(sig[0])[2:], hex(sig[1])[2:]))
+	plain_qr = qrcode.QRCode(
 			version = 1,
 			error_correction = qrcode.constants.ERROR_CORRECT_L,
 			box_size = 4,
 			border = 4,
 	)
-	qr.add_data(signed_cmt)
-	qr.make()
-	img = qr.make_image()
-	qr_path = 'qrcodes/' + session["voter_id"] + '.png'
-	img.save(qr_path)
+	plain_qr.add_data(signed_data)
+	plain_qr.make()
+	plain_img = plain_qr.make_image()
+
+	plain_img.save(qr_path+'-plain'+'.png')
+	sig_qr = qrcode.QRCode(
+			version = 1,
+			error_correction = qrcode.constants.ERROR_CORRECT_L,
+			box_size = 4,
+			border = 4,
+	)
+	sig_qr.add_data(all_qr_data_ser)
+	sig_qr.make()
+	sig_img = sig_qr.make_image()
+	sig_img.save(qr_path+'-sig'+'.png')
 	# REALLY, WE NEED TO PRINT THE QR CODE HERE, NOT SAVE IT
-	#os.system('echo "Signed Commitment: ' + signed_cmt + '" | lpr')
-	# print qr code
-	#os.system('lpr -o fit-to-page ' + qr_path)
-	print_image(qr_path)
+	print_text('PLAINTEXT QR CODE')
+	print_image(qr_path+'-plain'+'.png')
+	print_text('SIGNED QR CODE')
+	print_image(qr_path+'-sig'+'.png')
 	# print voter_id
 	#os.system('echo "Voter ID: ' + session["voter_id"] + '" | lpr')
 	print_text('Voter ID: ' + session["voter_id"])
