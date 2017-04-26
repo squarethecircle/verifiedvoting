@@ -30,7 +30,7 @@ from gmail.message import Message
 
 
 app = Flask(__name__)
-app.secret_key = "should be more secret than this" # OBVIOUSLY NEEDS TO CHANGE
+app.secret_key = "should be more secret than this" # NEEDS TO CHANGE!
 
 app.session_interface = RedisSessionInterface()
 
