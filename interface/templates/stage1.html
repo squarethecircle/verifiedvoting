@@ -20,7 +20,8 @@
 	</head>
 	<body>
 		<p>Voter ID: <b>{{ voter_id }}</b></p>
-		<p>Available candidates:</p>
+		<h2>Instructions</h2>
+		<p>Please select a candidate:</p>
 
 		{% for c in candidates %}
 			<p>Press <b>{{ c }}</b> to select: <b>{{ cand_dict[c] }}</b></p>

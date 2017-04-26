@@ -113,39 +113,39 @@ def serializeEcPts(d):
 			new_d[key] = tuple(map(EcPtToStr, value))
 	return new_d
 
-def castVote(voter_id, candidate):
-	DC = {}
-	R = order.random()
-	for non_vote in filter(lambda l: l != candidate, candidates):
-		DC[non_vote] = ' '.join([getRandomWord() for i in range(4)])
-	rc, masks, rb = genRealCommitments(candidate, K, R)
-	commitments, randoms = genFakeCommitments(DC, K, candidate, R)
-	randoms[candidate] = rb
-	commitments[candidate] = masks
-	cmt_list = []
-	for sk in sorted(commitments):
-		cmt_list.append(commitments[sk])
-	everything = challengeHash(''.join(map(str,[rc] + list(chain(cmt_list)))), K) #alphabetize this
-	rx = order.random()
-	x = commit(Bn.from_hex(everything), rx)
-	DC[candidate] = ' '.join([getRandomWord() for i in range(4)])  #random challenge real vote
-	answers = answerChallenges(DC, randoms, K, R)
-	verifyCommitment(x, rc, cmt_list, rx)
-	challenge_dict = {candidate: {'challenge': DC[candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in DC}
-	receipt = serializeEcPts({'voter_id': voter_id, 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
-	sig = do_ecdsa_sign(G, sig_key, EcPtToStr(x).encode('utf-8'), kinv_rp)
-	signed_cmt = '_'.join((EcPtToStr(x), hex(sig[0])[2:], hex(sig[1])[2:]))
-	qr = qrcode.QRCode(
-			version = 1,
-			error_correction = qrcode.constants.ERROR_CORRECT_L,
-			box_size = 4,
-			border = 4,
-	)
-	qr.add_data(signed_cmt)
-	qr.make()
-	img = qr.make_image()
-	img.save('qrcodes/to_print.png')
-	return (candidate, rc, R, everything, str(x), answers, receipt)
+# def castVote(voter_id, candidate):
+# 	DC = {}
+# 	R = order.random()
+# 	for non_vote in filter(lambda l: l != candidate, candidates):
+# 		DC[non_vote] = ' '.join([getRandomWord() for i in range(4)])
+# 	rc, masks, rb = genRealCommitments(candidate, K, R)
+# 	commitments, randoms = genFakeCommitments(DC, K, candidate, R)
+# 	randoms[candidate] = rb
+# 	commitments[candidate] = masks
+# 	cmt_list = []
+# 	for sk in sorted(commitments):
+# 		cmt_list.append(commitments[sk])
+# 	everything = challengeHash(''.join(map(str,[rc] + list(chain(cmt_list)))), K) #alphabetize this
+# 	rx = order.random()
+# 	x = commit(Bn.from_hex(everything), rx)
+# 	DC[candidate] = ' '.join([getRandomWord() for i in range(4)])  #random challenge real vote
+# 	answers = answerChallenges(DC, randoms, K, R)
+# 	verifyCommitment(x, rc, cmt_list, rx)
+# 	challenge_dict = {candidate: {'challenge': DC[candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in DC}
+# 	receipt = serializeEcPts({'voter_id': voter_id, 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
+# 	sig = do_ecdsa_sign(G, sig_key, EcPtToStr(x).encode('utf-8'), kinv_rp)
+# 	signed_cmt = '_'.join((EcPtToStr(x), hex(sig[0])[2:], hex(sig[1])[2:]))
+# 	qr = qrcode.QRCode(
+# 			version = 1,
+# 			error_correction = qrcode.constants.ERROR_CORRECT_L,
+# 			box_size = 4,
+# 			border = 4,
+# 	)
+# 	qr.add_data(signed_cmt)
+# 	qr.make()
+# 	img = qr.make_image()
+# 	img.save('qrcodes/to_print.png')
+# 	return (candidate, rc, R, everything, str(x), answers, receipt)
 
 # def verifyChallenge(cd, vote_commitment):
 # 	vc = strToEcPt(vote_commitment, G)
