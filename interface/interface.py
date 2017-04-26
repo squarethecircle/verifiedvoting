@@ -42,6 +42,12 @@ def reset_dict_keys():
 	session["rev_d"] = convert_keys_to_int(session["rev_d"])
 	session["challenges"] = convert_keys_to_int(session["challenges"])
 
+def print_image(imgurl):
+	os.system('lpr -o fit-to-page ' + imgurl)
+
+def print_text(text_tp):
+	os.system('echo -e "' + text_tp + '\\n\\n\\n" > /dev/ttyAMA0')
+
 # MADE OBSOLETE BY PETLIB.PACK ENCODE/DECODE
 # # based on serializeEcPts
 # def serializeBns(d):
@@ -162,7 +168,8 @@ def desist_tricky_objects():
 	return R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt
 
 def setup_machine():
-
+	# set serial baud
+	os.system('stty -F /dev/ttyAMA0 19200')
 	# election information
 	# (consider either reading this from config file, 
 	# allowing user to input at setup stage)
@@ -306,7 +313,8 @@ def stage3():
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers = None, receipt = None)
 
 	# NOW WE NEED TO PRINT THE TWO LINES BEHIND THE SHIELD
-	os.system('echo "' + genvote.EcPtToStr(x) + '" | lpr')
+	#os.system('echo "' + genvote.EcPtToStr(x) + '" | lpr')
+	print_text(genvote.EcPtToStr(x))
 
 	return render_template("stage3.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"], voter_id = session["voter_id"])
 
@@ -371,11 +379,14 @@ def stage5():
 	# REALLY, WE NEED TO PRINT THE QR CODE HERE, NOT SAVE IT
 	#os.system('echo "Signed Commitment: ' + signed_cmt + '" | lpr')
 	# print qr code
-	os.system('lpr -o fit-to-page ' + qr_path)
+	#os.system('lpr -o fit-to-page ' + qr_path)
+	print_image(qr_path)
 	# print voter_id
-	os.system('echo "Voter ID: ' + session["voter_id"] + '" | lpr')
+	#os.system('echo "Voter ID: ' + session["voter_id"] + '" | lpr')
+	print_text('Voter ID: ' + session["voter_id"])
 	# print Receipt Certified
-	os.system('echo "--RECEIPT CERTIFIED--" | lpr')
+	#os.system('echo "--RECEIPT CERTIFIED--" | lpr')
+	print_text('------RECEIPT CERTIFIED------')
 
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt)
 
