@@ -2,6 +2,7 @@
 
 <html>
 	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 		<script>
 			document.addEventListener('keydown', function(event) {
 			    if (event.keyCode == 13) {
@@ -11,6 +12,6 @@
 		</script>
 	</head>
 
-	<p>Machine setup is complete.</p>
+	<h1>Machine setup is complete.</h1>
 	<p>Press ENTER to ready machine for voting.</p>
 </html>

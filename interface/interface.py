@@ -2,9 +2,10 @@ from flask import Flask
 from flask import render_template
 from flask import request
 from flask import session
-import numpy
+# import numpy
 import os
 import re
+import random
 
 import os
 from RedisSession import RedisSessionInterface
@@ -249,7 +250,8 @@ def stage2():
 	# should never be triggered because we check in stage2.html
 	# assert(session["chosen"] > 0 and session["chosen"] <= len(session["candidates"]))
 	
-	challenges = {i:" ".join(numpy.random.choice(session["dictionary_words"], session["lenChallenge"], replace = False)) for i in session["candidates"]}
+	# challenges = {i:" ".join(numpy.random.choice(session["dictionary_words"], session["lenChallenge"], replace = False)) for i in session["candidates"]}
+	challenges = {i:" ".join(random.sample(session["dictionary_words"], session["lenChallenge"])) for i in session["candidates"]}
 	challenges[session["chosen"]] = None
 
 
@@ -310,7 +312,8 @@ def stage4():
 
 	# print(session["challenges"])
 
-	chosen_challenge = " ".join(numpy.random.choice(session["dictionary_words"], session["lenChallenge"], replace = False))
+	# chosen_challenge = " ".join(numpy.random.choice(session["dictionary_words"], session["lenChallenge"], replace = False))
+	chosen_challenge = " ".join(random.sample(session["dictionary_words"], session["lenChallenge"]))
 
 	return render_template("stage4.html", candidates = session["candidates"], cand_dict = session["rev_d"], chosen = session["chosen"], challenges = session["challenges"], chosen_challenge = chosen_challenge, voter_id = session["voter_id"])
 
