@@ -209,6 +209,9 @@ def new_voter():
 	session["challenges"] = {}
 	session["chosen_challenge"] = None
 
+	print_text('----BEGIN RECEIPT----')
+	print_text('Voter ID: ' + session["voter_id"])
+
 	# new variables from castVote
 	# using session["chosen"] instead of candidate, and session["challenges"] instead of DC
 
@@ -416,6 +419,10 @@ def stage5():
 	# print Receipt Certified
 	#os.system('echo "--RECEIPT CERTIFIED--" | lpr')
 	print_text('------RECEIPT CERTIFIED------')
+
+	# blank space at the bottom
+	for i in range(5):
+		print_text('')
 
 	persist_tricky_objects(R, rc, masks, rb, commitments, randoms, cmt_list, everything, rx, x, answers, receipt)
 
