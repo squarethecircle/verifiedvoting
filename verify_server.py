@@ -125,14 +125,15 @@ def index():
 def tally():
 	return 'Tally: ' + ttally
 
-@app.route('/login', methods=['POST', 'GET'])
+@app.route('/verify', methods=['POST', 'GET'])
 def ver_ind():
 	if request.method == 'GET':
 		return 'Verify that your vote was counted using a POST request!'
 	if request.method == 'POST':
-		v_id = request.form['ID']
-		v_challenges = json.loads(request.form['CHAL'])
-		v_cmt = request.form['CMT']
+		content = request.json
+		v_id = content['ID']
+		v_challenges = content['CHAL']
+		v_cmt = content['CMT']
 		for recpt in ver_dict['receipts']:
 			if recpt['voter'] == v_id:
 				if v_cmt == recpt['commitment_to_everything']:
