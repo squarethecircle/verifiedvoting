@@ -2,6 +2,7 @@
 
 <html>
 	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 		<script>
 			document.addEventListener('keydown', function(event) {
 			    if (event.keyCode == 13) {
@@ -13,18 +14,20 @@
 			}, true);
 		</script>
 	</head>
-	<p>Voter ID: {{ voter_id }}</p>
-	<p>You are voting for: {{ cand_dict[chosen] }}</p>
+	<body>
+		<p>Voter ID: {{ voter_id }}</p>
+		<p>You are voting for: {{ cand_dict[chosen] }}</p>
 
-	<p>Please verify that two lines were printed. The lines should be behind the shield.</p>
-	<p>Press ENTER to accept, ESC to vote for someone else or if the lines do not match.</p>
+		<p>Please verify that two lines were printed. The lines should be behind the shield.</p>
+		<p>Press ENTER to accept, ESC to vote for someone else or if the lines did not print.</p>
 
-	{% for c in candidates %}
-		{% if c != chosen %}
-			<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
-		{% else %}
-			<p> {{ c }} | {{ cand_dict[c] }} | NOT_YET </p>
-		{% endif %}
-	{% endfor %}
+		{% for c in candidates %}
+			{% if c != chosen %}
+				<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
+			{% else %}
+				<p> {{ c }} | {{ cand_dict[c] }} | NOT_YET </p>
+			{% endif %}
+		{% endfor %}
+	</body>
 
 </html>

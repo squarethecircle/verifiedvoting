@@ -2,6 +2,7 @@
 
 <html>
 	<head>
+		<link rel="stylesheet" href="{{ url_for('static', filename='styles/main.css') }}">
 		<script>
 			document.addEventListener('keydown', function(event) {
 			    if (event.keyCode == 13) {
@@ -15,20 +16,22 @@
 			}, true);
 		</script>
 	</head>
-	<p>Voter ID: {{ voter_id }}</p>
-	<p>You are voting for: {{ cand_dict[chosen] }}</p>
+	<body>
+		<p>Voter ID: {{ voter_id }}</p>
+		<p>You are voting for: {{ cand_dict[chosen] }}</p>
 
-	<p>Is this challenge ok?</p>
-	<p>Press ENTER to accept, ESC to vote for someone else, or use TAB to select the challenge to edit.</p>
+		<p>Is this challenge ok?</p>
+		<p>Press ENTER to accept, ESC to vote for someone else, or use TAB to select the challenge to edit.</p>
 
-	<form id="challenges_form" action="/stage5" method="post">
-		{% for c in candidates %}
-			{% if c != chosen %}
-				<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
-			{% else %}
-				<p> {{ c }} | {{ cand_dict[c] }} | <input type="text" name="chosen_challenge" value="{{ chosen_challenge }}"> </p>
-			{% endif %}
-		{% endfor %}
-	</form>
+		<form id="challenges_form" action="/stage5" method="post">
+			{% for c in candidates %}
+				{% if c != chosen %}
+					<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
+				{% else %}
+					<p> {{ c }} | {{ cand_dict[c] }} | <input type="text" name="chosen_challenge" value="{{ chosen_challenge }}"> </p>
+				{% endif %}
+			{% endfor %}
+		</form>
+	</body>
 
 </html>

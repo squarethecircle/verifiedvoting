@@ -357,6 +357,14 @@ def stage5():
 	challenge_dict = {candidate: {'challenge': session["challenges"][candidate], 'answer': list(map(str,answers[candidate])), 'proof': commitments[candidate]} for candidate in session["challenges"]}
 	receipt = genvote.serializeEcPts({'voter_id': session["voter_id"], 'challenges': challenge_dict, 'vote_commitment': rc, 'rx': str(rx), 'commitment_to_everything': x})
 	
+
+
+	# print challenges
+	print_text('CHALLENGES')
+	for i in session["candidates"]:
+		print_text(str(i) + ' | ' + session["rev_d"][i] + ' | ' + session["challenges"][i])
+
+
 	# random beacon
 	r = requests.get("https://beacon.nist.gov/rest/record/last")
 	timestamp = re.search(r"<timeStamp>(.*)<\/timeStamp>",r.text).group(1)

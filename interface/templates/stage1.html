@@ -17,11 +17,12 @@
 			}, true);
 		</script>
 	</head>
-	<p>Voter ID: {{ voter_id }}</p>
-	<p>Available candidates:</p>
+	<body>
+		<p>Voter ID: {{ voter_id }}</p>
+		<p>Available candidates:</p>
 
-	{% for c in candidates %}
-		<p>Press {{ c }} to select: {{ cand_dict[c] }}</p>
-	{% endfor %}
-
+		{% for c in candidates %}
+			<p>Press {{ c }} to select: {{ cand_dict[c] }}</p>
+		{% endfor %}
+	</body>
 </html>
