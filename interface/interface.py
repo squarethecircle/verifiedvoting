@@ -24,6 +24,8 @@ from collections import defaultdict, Counter
 import json
 
 import requests
+from gmail.gmail import GMail
+from gmail.message import Message
 # from bs4 import BeautifulSoup
 
 
@@ -464,6 +466,10 @@ def finish():
 		f.write(json_str)
 
 	verification_file_url = os.popen("curl --upload-file ./verification.json https://transfer.sh/verification.json").read()
+
+	xmail = GMail('Verified Voting <yaleverifiedvoting@gmail.com>','qyfsewfeepumeaex')
+	msg = Message('New Verification File',to='Verified Voting <yaleverifiedvoting@gmail.com>, Soham Sankaran <soham.sankaran@gmail.com>',text=verification_file_url)
+	xmail.send(msg)
 
 	return render_template("finished.html", verification_file_url = verification_file_url)
 
