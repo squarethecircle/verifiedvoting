@@ -23,6 +23,27 @@
 		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to vote for someone else, or use <b>TAB</b> to select a challenge to edit.</p>
 
 		<form id="challenges_form" action="/stage3" method="post">
+			<table border="1">
+				<tr> 
+					<th> # </th>
+					<th> candidate </th>
+					<th> challenge </th>
+				</tr>
+				{% for c in candidates %}
+					<tr>
+						<td>{{ c }}</td>
+						<td>{{ cand_dict[c] }}</td>
+						{% if c != chosen %}
+							<td><input type="text" name="challenge{{ c }}" value="{{ challenges[c] }}"></td>
+						{% else %}				
+							<td>NOT_YET</td> 
+						{% endif %}
+					</tr>
+				{% endfor %}
+			</table>
+		</form>
+
+		<!-- <form id="challenges_form" action="/stage3" method="post">
 			{% for c in candidates %}
 				{% if c != chosen %}
 					<p> {{ c }} | {{ cand_dict[c] }} | <input type="text" name="challenge{{ c }}" value="{{ challenges[c] }}"> </p>
@@ -30,7 +51,8 @@
 					<p> {{ c }} | {{ cand_dict[c] }} | NOT_YET </p>
 				{% endif %}
 			{% endfor %}
-		</form>
+		</form> -->
+		
 	</body>
 
 </html>

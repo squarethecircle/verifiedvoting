@@ -21,13 +21,32 @@
 		<p>Please verify that two lines were printed. The lines should be behind the shield.</p>
 		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to vote for someone else or if the lines did not print.</p>
 
+		<table border="1">
+			<tr> 
+				<th> # </th>
+				<th> candidate </th>
+				<th> challenge </th>
+			</tr>
+			{% for c in candidates %}
+				<tr>
+					<td>{{ c }}</td>
+					<td>{{ cand_dict[c] }}</td>
+					{% if c != chosen %}
+						<td>{{ challenges[c] }}</td>
+					{% else %}				
+						<td>NOT_YET</td> 
+					{% endif %}
+				</tr>
+			{% endfor %}
+		</table>
+<!-- 
 		{% for c in candidates %}
 			{% if c != chosen %}
 				<p> {{ c }} | {{ cand_dict[c] }} | {{ challenges[c] }} </p>
 			{% else %}
 				<p> {{ c }} | {{ cand_dict[c] }} | NOT_YET </p>
 			{% endif %}
-		{% endfor %}
+		{% endfor %} -->
 	</body>
 
 </html>
