@@ -46,7 +46,8 @@ def print_image(imgurl):
 	os.system('lpr -o fit-to-page ' + imgurl)
 
 def print_text(text_tp):
-	os.system('echo -e "' + text_tp + '\\n\\n\\n" > /dev/ttyAMA0')
+	#os.system('echo -e "' + text_tp + '\\n\\n\\n" > /dev/ttyAMA0')
+	os.system('echo "' + text_tp + '" | lpr')
 
 # MADE OBSOLETE BY PETLIB.PACK ENCODE/DECODE
 # # based on serializeEcPts
