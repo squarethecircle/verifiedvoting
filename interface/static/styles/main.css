@@ -1,13 +1,14 @@
 body {
     /*background-color: lightblue;*/
     /*color: ;*/
+    /*https://www.w3schools.com/cssref/css_websafe_fonts.asp*/
     font-family: Georgia, serif;
 }
 
 h1 {
 	/*text-decoration: line-through;*/
 }
-
+/*https://www.w3schools.com/css/css_table.asp*/
 table, th, td {
    /*border: 1px solid black;*/
 }
