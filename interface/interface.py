@@ -369,7 +369,7 @@ def stage5():
 
 	cmt_ev = genvote.EcPtToStr(x)
 
-	all_qr_data_dict = {"ID": session["voter_id"], "BEACON": outputvalue, "CMT": cmt_ev, "CHALLENGES": json.dumps(challenge_dict)}
+	all_qr_data_dict = {"ID": session["voter_id"], "BEACON": outputvalue, "CMT": cmt_ev, "CHALLENGES": json.dumps(session["challenges"])}
 	all_qr_data_ser = json.dumps(all_qr_data_dict)
 
 	qr_path = 'qrcodes/' + session["voter_id"] 
