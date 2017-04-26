@@ -95,7 +95,6 @@ def verifyVotes(ver_d):
 	#verify commitments for each vote
 	for receipt in ver_d['receipts']:
 		sortc = sorted(receipt['challenges'])
-		print(sortc)
 		proof_list = []
 		for sk in sortc:
 			ktr = []
@@ -132,9 +131,20 @@ def ver_ind():
 		return 'Verify that your vote was counted using a POST request!'
 	if request.method == 'POST':
 		v_id = request.form['ID']
-		v_challenges = request.form['CHAL']
+		v_challenges = json.loads(request.form['CHAL'])
 		v_cmt = request.form['CMT']
-		return 'Hello, World'
+		for recpt in ver_dict['receipts']:
+			if recpt['voter'] == v_id:
+				if v_cmt == recpt['commitment_to_everything']:
+					curr_t = True
+					for v_chal in v_challenges.keys():
+						if(v_challenges[v_chal] == recpt['challenges'][v_chal]['challenge']):
+							curr_t = curr_t and True
+						else:
+							curr_t = False
+					if curr_t:
+						return "Verified! Your vote did count!"
+		return "Failed! Your vote didn't count -- you should contact the authorities."
 
 if __name__ == "__main__":
 	ver_file_url = sys.argv[-1]
