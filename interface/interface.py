@@ -170,7 +170,7 @@ def desist_tricky_objects():
 
 def setup_machine():
 	# set serial baud
-	os.system('stty -F /dev/ttyAMA0 19200')
+	# os.system('stty -F /dev/ttyAMA0 19200')
 	# election information
 	# (consider either reading this from config file, 
 	# allowing user to input at setup stage)
