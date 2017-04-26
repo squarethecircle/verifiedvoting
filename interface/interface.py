@@ -369,7 +369,7 @@ def stage5():
 
 	cmt_ev = genvote.EcPtToStr(x)
 
-	all_qr_data_dict = {"ID": session["voter_id"], "BEACON": outputvalue, "CMT": cmt_ev, "CHALLENGES": json.dumps(session["challenges"])}
+	all_qr_data_dict = {"ID": session["voter_id"], "B_TIMESTAMP": timestamp, "B_VALUE": outputvalue, "CMT": cmt_ev, "CHALLENGES": json.dumps(session["challenges"])}
 	all_qr_data_ser = json.dumps(all_qr_data_dict)
 
 	qr_path = 'qrcodes/' + session["voter_id"] 
@@ -382,7 +382,7 @@ def stage5():
 			box_size = 4,
 			border = 4,
 	)
-	plain_qr.add_data(signed_data)
+	plain_qr.add_data(all_qr_data_ser)
 	plain_qr.make()
 	plain_img = plain_qr.make_image()
 
@@ -393,7 +393,7 @@ def stage5():
 			box_size = 4,
 			border = 4,
 	)
-	sig_qr.add_data(all_qr_data_ser)
+	sig_qr.add_data(signed_data)
 	sig_qr.make()
 	sig_img = sig_qr.make_image()
 	sig_img.save(qr_path+'-sig'+'.png')
