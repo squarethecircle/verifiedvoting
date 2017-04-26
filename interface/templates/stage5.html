@@ -15,11 +15,11 @@
 		</script>
 	</head>
 	<body>
-		<p>Voter ID: {{ voter_id }}</p>
-		<p>You are voting for: {{ cand_dict[chosen] }}</p>
+		<p>Voter ID: <b>{{ voter_id }}</b></p>
+		<p>You are voting for: <b>{{ cand_dict[chosen] }}</b></p>
 
 		<p>Was your receipt printed and correct?</p>
-		<p>Press ENTER to accept, ESC to cancel and restart</p>
+		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to cancel and restart</p>
 
 
 		{% for c in candidates %}

@@ -18,11 +18,11 @@
 		</script>
 	</head>
 	<body>
-		<p>Voter ID: {{ voter_id }}</p>
+		<p>Voter ID: <b>{{ voter_id }}</b></p>
 		<p>Available candidates:</p>
 
 		{% for c in candidates %}
-			<p>Press {{ c }} to select: {{ cand_dict[c] }}</p>
+			<p>Press <b>{{ c }}</b> to select: <b>{{ cand_dict[c] }}</b></p>
 		{% endfor %}
 	</body>
 </html>

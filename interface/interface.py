@@ -465,7 +465,7 @@ def finish():
 
 	verification_file_url = os.popen("curl --upload-file ./verification.json https://transfer.sh/verification.json").read()
 
-	return render_template("finished.html")
+	return render_template("finished.html", verification_file_url = verification_file_url)
 
 #@app.route("/verify")
 #def verroute():

@@ -16,11 +16,11 @@
 		</script>
 	</head>
 	<body>
-		<p>Voter ID: {{ voter_id }}</p>
-		<p>You are voting for: {{ cand_dict[chosen] }}</p>
+		<p>Voter ID: <b>{{ voter_id }}</b></p>
+		<p>You are voting for: <b>{{ cand_dict[chosen] }}</b></p>
 
 		<p>Are these challenges ok?</p>
-		<p>Press ENTER to accept, ESC to vote for someone else, or use TAB to select a challenge to edit.</p>
+		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to vote for someone else, or use <b>TAB</b> to select a challenge to edit.</p>
 
 		<form id="challenges_form" action="/stage3" method="post">
 			{% for c in candidates %}

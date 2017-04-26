@@ -15,11 +15,11 @@
 		</script>
 	</head>
 	<body>
-		<p>Voter ID: {{ voter_id }}</p>
-		<p>You are voting for: {{ cand_dict[chosen] }}</p>
+		<p>Voter ID: <b>{{ voter_id }}</b></p>
+		<p>You are voting for: <b>{{ cand_dict[chosen] }}</b></p>
 
 		<p>Please verify that two lines were printed. The lines should be behind the shield.</p>
-		<p>Press ENTER to accept, ESC to vote for someone else or if the lines did not print.</p>
+		<p>Press <b>ENTER</b> to accept, <b>ESC</b> to vote for someone else or if the lines did not print.</p>
 
 		{% for c in candidates %}
 			{% if c != chosen %}
