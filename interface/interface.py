@@ -458,7 +458,7 @@ def finish():
 	print(tally)
 
 	proofs = genvote.doFiatShamir(votes, vote_commits, randoms, tally)
-	big_dict = {'G': '934', 'sleeve': genvote.sleeve, 'g': genvote.EcPtToStr(genvote.g), 'h': genvote.EcPtToStr(genvote.h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
+	big_dict = {'G': str(genvote.GROUP_ID), 'sleeve': genvote.sleeve, 'g': genvote.EcPtToStr(genvote.g), 'h': genvote.EcPtToStr(genvote.h), 'precinct-id': '0', 'receipts': receipts, 'tally': tally, 'proofs': proofs}
 	json_str = json.dumps(big_dict)
 
 	for candidate in tally:

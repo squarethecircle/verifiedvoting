@@ -11,14 +11,16 @@ import uuid
 import random
 import qrcode
 
-G = EcGroup(934)
+GROUP_ID = 713
+G = EcGroup(GROUP_ID)
 order = G.order()
 h = G.generator()
 sleeve = "nothing_up_my_sleeve"
 g = G.hash_to_point(sleeve.encode('utf-8'))
 
 #secret!!!
-sig_key = order.random()
+SECRET_KEY = "18469189115185335524321997938571387166948936114449139412337896248755" # NO ONE SHOULD SEE THIS LINE!
+sig_key = Bn.from_decimal(SECRET_KEY) 
 kinv_rp = do_ecdsa_setup(G, sig_key)
 #not secret
 ver_key = sig_key * h
