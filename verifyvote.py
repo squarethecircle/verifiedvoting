@@ -17,7 +17,9 @@ import random
 def commit(a, r, h, g):
 	return a * h + r * g
 
-K = 128
+# changed for raspberry pi
+# K = 128
+K = 32
 
 d = {'ALICE': 1, 'BETTY': 2, 'CHARLIE': 3}
 rev_d = {v:k for k,v in d.items()}
