@@ -73,8 +73,9 @@ def answerChallenges(challenges, randoms, k, R):
 			challenge_num >>= 1
 	return answers
 
-
-K = 128
+# changed for raspberry pi
+# K = 128
+K = 32
 
 d = {'ALICE': 1, 'BETTY': 2, 'CHARLIE': 3}
 rev_d = {v:k for k,v in d.items()}
