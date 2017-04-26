@@ -173,7 +173,19 @@ def setup_machine():
 	# for autogenerating challenges
 	# with open('/usr/share/dict/words') as f:
 	# 	session["dictionary_words"] = list(map(str.strip,f.readlines()))
-	session["dictionary_words"] = ["hello", "these", "are", "challenge", "words", "which", "should", "later", "be", "replaced", "by", "a", "dictionary"]
+	# session["dictionary_words"] = ["hello", "these", "are", "challenge", "words", "which", "should", "later", "be", "replaced", "by", "a", "dictionary"]
+	
+	# from https://github.com/first20hours/google-10000-english
+	# (google-10000-english-usa-no-swears.txt)
+	# with stopwords removed using nltk
+	with open('interface_words.txt','r') as iw:
+		words = iw.readlines()
+
+	# http://stackoverflow.com/questions/3277503/how-do-i-read-a-file-line-by-line-into-a-list
+	words = [w.strip() for w in words]
+	session["dictionary_words"] = words
+
+
 	session["lenChallenge"] = 3
 
 	# where votes are stored
