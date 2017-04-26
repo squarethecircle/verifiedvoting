@@ -389,7 +389,7 @@ def stage5():
 	qr_path = 'qrcodes/' + session["voter_id"] 
 
 	sig = do_ecdsa_sign(genvote.G, genvote.sig_key, all_qr_data_ser.encode('utf-8'), genvote.kinv_rp)
-	sign_dict = {'r': hex(sig[0])[2:], 'r': hex(sig[1])[2:]}
+	sign_dict = {'r': hex(sig[0])[2:], 's': hex(sig[1])[2:]}
 	signed_data = json.dumps(sign_dict)
 	plain_qr = qrcode.QRCode(
 			version = 1,
