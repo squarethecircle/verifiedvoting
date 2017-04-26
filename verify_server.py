@@ -15,6 +15,8 @@ import uuid
 import random
 
 from flask import Flask
+from flask import request
+from flask import jsonify
 app = Flask(__name__)
 
 # changed for raspberry pi
@@ -135,7 +137,7 @@ def ver_ind():
 		v_challenges = content['CHAL']
 		v_cmt = content['CMT']
 		for recpt in ver_dict['receipts']:
-			if recpt['voter'] == v_id:
+			if recpt['voter_id'] == v_id:
 				if v_cmt == recpt['commitment_to_everything']:
 					curr_t = True
 					for v_chal in v_challenges.keys():
@@ -144,8 +146,10 @@ def ver_ind():
 						else:
 							curr_t = False
 					if curr_t:
-						return "Verified! Your vote did count!"
-		return "Failed! Your vote didn't count -- you should contact the authorities."
+						return jsonify(verified=True)
+						#return "Verified! Your vote did count!"
+		#return "Failed! Your vote didn't count -- you should contact the authorities."
+		return jsonify(verified=False)
 
 if __name__ == "__main__":
 	ver_file_url = sys.argv[-1]
