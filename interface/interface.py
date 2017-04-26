@@ -363,6 +363,9 @@ def stage5():
 	outputvalue = re.search(r"<outputValue>(.*)<\/outputValue>",r.text).group(1)
 	# timestamp and outputvalue need to be printed to receipt in some way
 	# print(timestamp, outputvalue)
+	print_text('RANDOM BEACON')
+	print_text('Timestamp: ' + timestamp)
+	print_text('Outputvalue: ' + outputvalue)
 
 	sig = do_ecdsa_sign(genvote.G, genvote.sig_key, genvote.EcPtToStr(x).encode('utf-8'), genvote.kinv_rp)
 	signed_cmt = ' '.join((genvote.EcPtToStr(x), hex(sig[0])[2:], hex(sig[1])[2:]))
